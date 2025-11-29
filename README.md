@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Accessibility Checker
 
-## Getting Started
+**AI-Powered Accessibility Analysis & Remediation Tool**
 
-First, run the development server:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38bdf8)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 The Problem
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Traditional accessibility tools (like Axe or Lighthouse) are great at **detecting** issues, but they often fall short on **remediation**:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- They provide generic advice (e.g., "Fix contrast") without context.
+- They don't understand your specific tech stack (Tailwind, React, etc.).
+- They can't "see" the page to rule out false positives (e.g., white text on a dark image).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💡 The Solution
 
-## Learn More
+**Accessibility Checker** bridges the gap between detection and action. It combines industry-standard scanning (Axe-core) with multimodal AI (Google Gemini) to provide:
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Visual Context**: The AI analyzes a screenshot of the element to understand the user impact.
+2.  **Code-Specific Fixes**: Generates copy-pasteable code snippets (Tailwind classes, HTML attributes) tailored to the violation.
+3.  **Human-Centric Explanations**: Explains _why_ an issue matters for specific users (e.g., "VoiceOver users will hear 'link' instead of 'Submit'").
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ✨ Key Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **🤖 AI-Powered Remediation**: Uses Google Gemini 2.0 Flash to generate specific code fixes.
+- **📸 Multimodal Analysis**: Sends both code and screenshots to the AI for accurate context.
+- **📄 Dark Mode PDF Export**: Generate professional, dark-themed PDF reports for stakeholders.
+- **🏆 Interactive Scoring**: Visual feedback with confetti for high scores (>70) and guidance for low scores.
+- **⚡ Real-time Analysis**: Scans pages and generates reports in under 60 seconds.
+- **🎨 Modern UI**: Built with Shadcn UI and Tailwind CSS for a premium dark-mode experience.
 
-## Deploy on Vercel
+## 🛠️ Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS, Lucide Icons.
+- **Backend**: Next.js API Routes.
+- **Scanning Engine**: Puppeteer, @axe-core/puppeteer.
+- **AI Engine**: Google Gemini API (@google/generative-ai).
+- **UI Components**: Shadcn UI.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- A Google Gemini API Key ([Get one here](https://aistudio.google.com/app/apikey))
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/yourusername/acc-checker.git
+    cd acc-checker
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Configure Environment Variables:**
+    Create a `.env.local` file in the root directory:
+
+    ```env
+    GEMINI_API_KEY=your_api_key_here
+    ```
+
+4.  **Run the Development Server:**
+
+    ```bash
+    npm run dev
+    ```
+
+5.  **Open the App:**
+    Navigate to [http://localhost:3000](http://localhost:3000).
+
+## 📖 Usage
+
+1.  **Enter a URL**: Type the URL you want to test (e.g., `https://dequeuniversity.com/demo/mars/`).
+2.  **Get Score**: Click "Get my score". The app will scan the page and analyze violations.
+3.  **Review Issues**:
+    - See the overall score.
+    - Expand individual violations to see the **AI Fix**.
+    - Read the **Impact** statement to understand the user experience.
+4.  **Export**: Click "Export PDF" to save a report.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.
