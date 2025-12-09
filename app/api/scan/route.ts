@@ -4,6 +4,9 @@ import chromium from "@sparticuz/chromium";
 import { runAxeScan } from "@/lib/axe";
 import { getAiRecommendations } from "@/lib/gemini";
 
+export const maxDuration = 60; // Allow up to 60 seconds (Pro plan feature, but helpful to set)
+export const dynamic = "force-dynamic";
+
 // Optional: Load local puppeteer for development only
 const getLocalPuppeteer = async () => {
 	try {
@@ -60,6 +63,8 @@ export async function POST(req: Request) {
 		const results = await runAxeScan(page);
 		const screenshot = await page.screenshot({
 			encoding: "base64",
+			type: "jpeg",
+			quality: 50,
 			fullPage: true,
 		});
 

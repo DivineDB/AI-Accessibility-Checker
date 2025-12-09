@@ -89,7 +89,7 @@ export async function getAiRecommendations(
 	const imagePart = {
 		inlineData: {
 			data: screenshotBase64,
-			mimeType: "image/png",
+			mimeType: "image/jpeg",
 		},
 	};
 
