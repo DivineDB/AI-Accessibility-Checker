@@ -4,19 +4,35 @@ import chromium from "@sparticuz/chromium";
 import { runAxeScan } from "@/lib/axe";
 import { getAiRecommendations } from "@/lib/gemini";
 
-export const maxDuration = 60; // Allow up to 60 seconds (Pro plan feature, but helpful to set)
+// Helper for Vercel Pro
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-// Optional: Load local puppeteer for development only
-const getLocalPuppeteer = async () => {
-	try {
-		const p = await import("puppeteer");
-		return p.default;
-	} catch (e) {
-		console.error("Local puppeteer not found", e);
-		return null;
+async function getBrowser() {
+	if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
+		// 1. Configure the path to the remote binary
+		// This URL matches the version of @sparticuz/chromium you installed (v131)
+		const executablePath = await chromium.executablePath(
+			"https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar"
+		);
+
+		return puppeteer.launch({
+			args: chromium.args,
+			defaultViewport: (chromium as any).defaultViewport,
+			executablePath,
+			headless: (chromium as any).headless,
+			ignoreHTTPSErrors: true,
+		} as any);
+	} else {
+		// Local Development
+		// Dynamic import to avoid bundling puppeteer in production
+		const { default: localPuppeteer } = await import("puppeteer");
+		return localPuppeteer.launch({
+			headless: true,
+			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+		});
 	}
-};
+}
 
 export async function POST(req: Request) {
 	try {
@@ -26,33 +42,7 @@ export async function POST(req: Request) {
 			return NextResponse.json({ error: "URL is required" }, { status: 400 });
 		}
 
-		let browser;
-		if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
-			// Production (Vercel)
-			browser = await puppeteer.launch({
-				args: chromium.args,
-				defaultViewport: (chromium as any).defaultViewport,
-				executablePath: await chromium.executablePath(),
-				headless: (chromium as any).headless,
-				ignoreHTTPSErrors: true,
-			} as any);
-		} else {
-			// Local Development
-			const localPuppeteer = await getLocalPuppeteer();
-			if (localPuppeteer) {
-				browser = await localPuppeteer.launch({
-					headless: true,
-					args: ["--no-sandbox", "--disable-setuid-sandbox"],
-				});
-			} else {
-				// Fallback if local puppeteer fails (shouldn't happen if installed)
-				browser = await puppeteer.launch({
-					channel: "chrome",
-					headless: true,
-					args: ["--no-sandbox", "--disable-setuid-sandbox"],
-				});
-			}
-		}
+		const browser = await getBrowser();
 
 		const page = await browser.newPage();
 
